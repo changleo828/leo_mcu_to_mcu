@@ -1,0 +1,162 @@
+   1               		.file	"main.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	SendOneByte
+  18               	SendOneByte:
+  19               	.LFB6:
+  20               	.LM1:
+  21               	.LVL0:
+  22               	/* prologue: function */
+  23               	/* frame size = 0 */
+  24               	.LM2:
+  25 0000 AA98      		cbi 53-32,2
+  26 0002 20E0      		ldi r18,lo8(0)
+  27 0004 30E0      		ldi r19,hi8(0)
+  28               	.LM3:
+  29 0006 60E8      		ldi r22,lo8(128)
+  30 0008 70E0      		ldi r23,hi8(128)
+  31 000a 482F      		mov r20,r24
+  32 000c 50E0      		ldi r21,lo8(0)
+  33               	.LVL1:
+  34               	.L4:
+  35 000e CB01      		movw r24,r22
+  36 0010 022E      		mov r0,r18
+  37 0012 00C0      		rjmp 2f
+  38 0014 9595      	1:	asr r25
+  39 0016 8795      		ror r24
+  40 0018 0A94      	2:	dec r0
+  41 001a 02F4      		brpl 1b
+  42 001c 8423      		and r24,r20
+  43 001e 9523      		and r25,r21
+  44 0020 892B      		or r24,r25
+  45 0022 01F0      		breq .L2
+  46               	.LM4:
+  47 0024 AB9A      		sbi 53-32,3
+  48 0026 00C0      		rjmp .L3
+  49               	.L2:
+  50               	.LM5:
+  51 0028 AB98      		cbi 53-32,3
+  52               	.L3:
+  53               	.LM6:
+  54 002a AA98      		cbi 53-32,2
+  55               	.LM7:
+  56 002c AA9A      		sbi 53-32,2
+  57 002e 2F5F      		subi r18,lo8(-(1))
+  58 0030 3F4F      		sbci r19,hi8(-(1))
+  59               	.LM8:
+  60 0032 2830      		cpi r18,8
+  61 0034 3105      		cpc r19,__zero_reg__
+  62 0036 01F4      		brne .L4
+  63               	/* epilogue start */
+  64               	.LM9:
+  65 0038 0895      		ret
+  66               	.LFE6:
+  68               	.global	IsInSCLUp
+  70               	IsInSCLUp:
+  71               	.LFB7:
+  72               	.LM10:
+  73               	/* prologue: function */
+  74               	/* frame size = 0 */
+  75               	.LM11:
+  76 003a 96B3      		in r25,54-32
+  77               	.LVL2:
+  78 003c 9170      		andi r25,lo8(1)
+  79               	.LM12:
+  80 003e 8091 0000 		lds r24,Flag_InSCL_UP
+  81 0042 8917      		cp r24,r25
+  82 0044 01F4      		brne .L8
+  83 0046 80E0      		ldi r24,lo8(0)
+  84 0048 0895      		ret
+  85               	.L8:
+  86               	.LM13:
+  87 004a 9093 0000 		sts Flag_InSCL_UP,r25
+  88 004e 80E0      		ldi r24,lo8(0)
+  89 0050 9130      		cpi r25,lo8(1)
+  90 0052 01F4      		brne .L9
+  91 0054 81E0      		ldi r24,lo8(1)
+  92               	.L9:
+  93               	.LM14:
+  94 0056 0895      		ret
+  95               	.LFE7:
+  97               	.global	ReceiveOneByte
+  99               	ReceiveOneByte:
+ 100               	.LFB8:
+ 101               	.LM15:
+ 102 0058 0F93      		push r16
+ 103 005a 1F93      		push r17
+ 104               	/* prologue: function */
+ 105               	/* frame size = 0 */
+ 106               	.LM16:
+ 107 005c 00E0      		ldi r16,lo8(0)
+ 108               	.LVL3:
+ 109 005e 10E0      		ldi r17,lo8(0)
+ 110               	.LVL4:
+ 111               	.L14:
+ 112               	.LM17:
+ 113 0060 00D0      		rcall IsInSCLUp
+ 114 0062 8823      		tst r24
+ 115 0064 01F0      		breq .L13
+ 116               	.LM18:
+ 117 0066 110F      		lsl r17
+ 118               	.LM19:
+ 119 0068 0F5F      		subi r16,lo8(-(1))
+ 120               	.LM20:
+ 121 006a B199      		sbic 54-32,1
+ 122               	.LM21:
+ 123 006c 1160      		ori r17,lo8(1)
+ 124               	.L13:
+ 125               	.LM22:
+ 126 006e 0830      		cpi r16,lo8(8)
+ 127 0070 00F0      		brlo .L14
+ 128               	.LM23:
+ 129 0072 812F      		mov r24,r17
+ 130               	/* epilogue start */
+ 131 0074 1F91      		pop r17
+ 132               	.LVL5:
+ 133 0076 0F91      		pop r16
+ 134               	.LVL6:
+ 135 0078 0895      		ret
+ 136               	.LFE8:
+ 138               	.global	main
+ 140               	main:
+ 141               	.LFB9:
+ 142               	.LM24:
+ 143               	/* prologue: function */
+ 144               	/* frame size = 0 */
+ 145               	.LM25:
+ 146 007a 8FEF      		ldi r24,lo8(-1)
+ 147 007c 84BB      		out 52-32,r24
+ 148               	.LM26:
+ 149 007e 17BA      		out 55-32,__zero_reg__
+ 150               	.LM27:
+ 151 0080 1092 0000 		sts Flag_InSCL_UP,__zero_reg__
+ 152               	.L18:
+ 153               	.LM28:
+ 154 0084 00D0      		rcall ReceiveOneByte
+ 155               	.LM29:
+ 156 0086 00D0      		rcall SendOneByte
+ 157 0088 00C0      		rjmp .L18
+ 158               	.LFE9:
+ 160               		.comm Flag_InSCL_UP,1,1
+ 209               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\DOCUME~1\G\LOCALS~1\Temp/ccXLWD6X.s:2      *ABS*:0000003f __SREG__
+C:\DOCUME~1\G\LOCALS~1\Temp/ccXLWD6X.s:3      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\G\LOCALS~1\Temp/ccXLWD6X.s:4      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\G\LOCALS~1\Temp/ccXLWD6X.s:5      *ABS*:00000034 __CCP__
+C:\DOCUME~1\G\LOCALS~1\Temp/ccXLWD6X.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\G\LOCALS~1\Temp/ccXLWD6X.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\G\LOCALS~1\Temp/ccXLWD6X.s:18     .text:00000000 SendOneByte
+C:\DOCUME~1\G\LOCALS~1\Temp/ccXLWD6X.s:70     .text:0000003a IsInSCLUp
+                            *COM*:00000001 Flag_InSCL_UP
+C:\DOCUME~1\G\LOCALS~1\Temp/ccXLWD6X.s:99     .text:00000058 ReceiveOneByte
+C:\DOCUME~1\G\LOCALS~1\Temp/ccXLWD6X.s:140    .text:0000007a main
+
+UNDEFINED SYMBOLS
+__do_clear_bss
